@@ -2,7 +2,14 @@ from graphics import *
 import math
 import time
 
+def getPoint(size, lenth, degree, type):
+    if(type == "sin"):
+        return(size / 2 + int(lenth * math.sin((180 - degree) * 2 * math.pi / 360)))
+    if(type == "cos"):
+        return(size / 2 + int(lenth * math.cos((180 - degree) * 2 * math.pi / 360)))
 
+def getLine(x1, y1, x2, y2):
+    return(Line(Point(x1,y1), Point(x2, y2)))
 
 def main():
     width = 500
@@ -15,32 +22,25 @@ def main():
     hour = 0
 
     win = GraphWin("Clock", width, height)
-    clockCircle = Circle(Point(width / 2, height / 2), secondLen + 15)
+    clockCircle = Circle(Point(width / 2, height / 2), secondLen + 20)
     clockCircle.draw(win)
 
     for i in range(0, 360, 30):
-        sinClockPoint1 = width / 2 + int((secondLen + 10) * math.sin((180 - i) * 2 * math.pi / 360))
-        sinClockPoint2 = width / 2 + int((secondLen + 15) * math.sin((180 - i) * 2 * math.pi / 360))
-        cosClockPoint1 = height / 2 + int((secondLen + 10) * math.cos((180 - i) * 2 * math.pi / 360))
-        cosClockPoint2 = height / 2 + int((secondLen + 15) * math.cos((180 - i) * 2 * math.pi / 360))
-        clockLine = Line(Point(sinClockPoint1, cosClockPoint1), Point(sinClockPoint2, cosClockPoint2))
+        clockLine = getLine(getPoint(width, secondLen + 10, i, "sin"), getPoint(height, secondLen + 10, i, "cos"),
+                            getPoint(width, secondLen + 20, i, "sin"), getPoint(height, secondLen + 20, i, "cos"))
         clockLine.draw(win)
 
-
     while True:
-        sinSecondPoint = width / 2 + int(secondLen * math.sin((180 - second) * 2 * math.pi / 360))
-        cosSecondPoint = height / 2 + int(secondLen * math.cos((180 - second) * 2 * math.pi / 360))
-        secondLine = Line(Point(width / 2, height / 2), Point(sinSecondPoint, cosSecondPoint))
-        sinMinutePoint = width / 2 + int(minuteLen * math.sin((180 - minute) * 2 * math.pi / 360))
-        cosMinutePoint = height / 2 + int(minuteLen * math.cos((180 - minute) * 2 * math.pi / 360))
-        minuteLine = Line(Point(width / 2, height / 2), Point(sinMinutePoint, cosMinutePoint))
-        sinHourPoint = width / 2 + int(hourLen * math.sin((180 - hour) * 2 * math.pi / 360))
-        cosHourPoint = height / 2 + int(hourLen * math.cos((180 - hour) * 2 * math.pi / 360))
-        hourLine = Line(Point(width / 2, height / 2), Point(sinHourPoint, cosHourPoint))        
+        secondLine = getLine(width / 2, height / 2, getPoint(width, secondLen, second, "sin"), getPoint(height, secondLen, second, "cos"))
+        minuteLine = getLine(width / 2, height / 2, getPoint(width, minuteLen, minute, "sin"), getPoint(height, minuteLen, minute, "cos"))
+        hourLine = getLine(width / 2, height / 2, getPoint(width, hourLen, hour, "sin"), getPoint(height, hourLen, hour, "cos"))
+
         secondLine.draw(win)
         minuteLine.draw(win)
         hourLine.draw(win)
+        
         time.sleep(1)
+        
         second += 6
         if(second == 360):
             second = 0
@@ -50,6 +50,7 @@ def main():
             hour += 30
         if(hour == 360):
             hour = 0
+        
         secondLine.undraw()
         minuteLine.undraw()
         hourLine.undraw()
